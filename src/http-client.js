@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import zip from 'lodash.zipobject'
-
+import * as tunnel from 'tunnel';
 import 'isomorphic-fetch'
 
 const BASE = 'https://api.binance.com'
@@ -111,21 +111,28 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) =>
-  sendResult(
+const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) => {
+  const options = {
+    method,
+    json: true,
+    headers,
+    timeout: endpoints.timeout
+  }
+  if (endpoints.agent) {
+    options.agent = endpoints.agent;
+  }
+  return sendResult(
     fetch(
       `${
         !(path.includes('/fapi') || path.includes('/futures')) || path.includes('/sapi')
           ? endpoints.base
           : endpoints.futures
       }${path}${makeQueryString(data)}`,
-      {
-        method,
-        json: true,
-        headers,
-      },
+      options
     ),
   )
+}
+
 
 /**
  * Factory method for partial private calls against the api
@@ -180,6 +187,16 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
 
     const newData = noExtra ? data : { ...data, timestamp, signature }
 
+    const options = {
+      method,
+      headers: { 'X-MBX-APIKEY': apiKey },
+      json: true,
+      timeout: endpoints.timeout
+    }
+    if (endpoints.agent) {
+      options.agent = endpoints.agent;
+    }
+
     return sendResult(
       fetch(
         `${
@@ -187,11 +204,7 @@ const privateCall = ({ apiKey, apiSecret, endpoints, getTime = defaultGetTime, p
             ? endpoints.base
             : endpoints.futures
         }${path}${noData ? '' : makeQueryString(newData)}`,
-        {
-          method,
-          headers: { 'X-MBX-APIKEY': apiKey },
-          json: true,
-        },
+        options
       ),
     )
   })
@@ -290,10 +303,27 @@ const aggTrades = (pubCall, payload, endpoint = '/api/v3/aggTrades') =>
     })),
   )
 
+
+function getProxyAgent(proxy) {
+  const { hostname, port } = new URL(proxy) || {};
+  if (!hostname || !port) return;
+  return tunnel.httpsOverHttp({
+    proxy: {
+        host: hostname,
+        port: Number(port),
+    },
+  });
+}
 export default opts => {
   const endpoints = {
     base: (opts && opts.httpBase) || BASE,
     futures: (opts && opts.httpFutures) || FUTURES,
+    timeout: (opts && opts.timeout) || 5000,
+  }
+
+  if (opts && opts.proxy) {
+    const agent = getProxyAgent(opts.proxy);
+    if (agent) endpoints.agent = agent;
   }
 
   const pubCall = publicCall({ ...opts, endpoints })

@@ -1,5 +1,5 @@
 // tslint:disable:interface-name
-declare module 'binance-api-node' {
+declare module 'binance-api-node-x' {
   export default function (options?: {
     apiKey?: string
     apiSecret?: string
@@ -8,6 +8,8 @@ declare module 'binance-api-node' {
     httpFutures?: string
     wsBase?: string
     wsFutures?: string
+    timeout?: number
+    proxy?: string
   }): Binance
 
   export type ErrorCodes_LT = -1000 | -1001 | -1002 | -1003 | -1006 | -1007 | -1013 | -1014
