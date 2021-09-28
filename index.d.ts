@@ -494,6 +494,7 @@ declare module 'binance-api-node-x' {
       limit?: number
     }): Promise<FundingRateResult[]>
     futuresOrder(options: NewFuturesOrder): Promise<FuturesOrder>
+    futuresBatchOrders(options: { batchOrders: NewFuturesOrder[] }): Promise<FuturesOrder[]>
     futuresCancelOrder(options: {
       symbol: string
       orderId: number
