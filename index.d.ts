@@ -497,9 +497,15 @@ declare module 'binance-api-node-x' {
     futuresBatchOrders(options: { batchOrders: NewFuturesOrder[] }): Promise<FuturesOrder[]>
     futuresCancelOrder(options: {
       symbol: string
-      orderId: number
+      orderId?: number
+      origClientOrderId?: string
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
+    futuresCancelAllOpenOrders(options: {
+      symbol: string
+      orderIdList?: number[]
+      origClientOrderIdList?: string[]
+    }): Promise<CancelOrderResult[]>
     futuresGetOrder(options: {
       symbol: string
       orderId?: number
