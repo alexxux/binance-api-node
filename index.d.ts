@@ -861,12 +861,12 @@ declare module 'binance-api-node-x' {
     type: OrderType_LT
     quantity?: string
     reduceOnly?: 'true' | 'false'
-    price?: number
+    price?: string
     timeInForce?: TimeInForce_LT
     newClientOrderId?: string
-    stopPrice?: number
+    stopPrice?: string
     closePosition?: 'true' | 'false'
-    activationPrice?: number
+    activationPrice?: string
     callbackRate?: number
     workingType?: WorkingType_LT
     newOrderRespType?: NewOrderRespType_LT
