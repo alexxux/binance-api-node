@@ -1052,7 +1052,7 @@ declare module 'binance-api-node-x' {
   }
 
   export type OrderType_LT = 'LIMIT' | 'LIMIT_MAKER' | 'MARKET' | 'STOP' | 'STOP_MARKET' | 'STOP_LOSS_LIMIT'
-   | 'TAKE_PROFIT_LIMIT' | 'TAKE_PROFIT_MARKET' | 'TRAILING_STOP_MARKET'
+   | 'TAKE_PROFIT_LIMIT' | 'TAKE_PROFIT_MARKET' | 'TRAILING_STOP_MARKET' | 'TAKE_PROFIT'
 
   export const enum OrderType {
     LIMIT = 'LIMIT',
