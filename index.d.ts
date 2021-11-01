@@ -480,6 +480,7 @@ declare module 'binance-api-node-x' {
     futuresDailyStats(options?: { symbol: string }): Promise<DailyStatsResult | DailyStatsResult[]>
     futuresPrices(): Promise<{ [index: string]: string }>
     futuresAllBookTickers(): Promise<{ [key: string]: Ticker }>
+    futuresMarkPrice(options: { symbol: string }): Promise<MarkPriceResult>
     futuresMarkPrice(): Promise<MarkPriceResult[]>
     futuresAllForceOrders(options?: {
       symbol?: string
@@ -494,11 +495,18 @@ declare module 'binance-api-node-x' {
       limit?: number
     }): Promise<FundingRateResult[]>
     futuresOrder(options: NewFuturesOrder): Promise<FuturesOrder>
+    futuresBatchOrders(options: { batchOrders: NewFuturesOrder[] }): Promise<FuturesOrder[]>
     futuresCancelOrder(options: {
       symbol: string
-      orderId: number
+      orderId?: number
+      origClientOrderId?: string
       useServerTime?: boolean
     }): Promise<CancelOrderResult>
+    futuresCancelAllOpenOrders(options: {
+      symbol: string
+      orderIdList?: number[]
+      origClientOrderIdList?: string[]
+    }): Promise<CancelOrderResult[]>
     futuresGetOrder(options: {
       symbol: string
       orderId?: number
@@ -853,12 +861,12 @@ declare module 'binance-api-node-x' {
     type: OrderType_LT
     quantity?: string
     reduceOnly?: 'true' | 'false'
-    price?: number
+    price?: string
     timeInForce?: TimeInForce_LT
     newClientOrderId?: string
-    stopPrice?: number
+    stopPrice?: string
     closePosition?: 'true' | 'false'
-    activationPrice?: number
+    activationPrice?: string
     callbackRate?: number
     workingType?: WorkingType_LT
     newOrderRespType?: NewOrderRespType_LT
@@ -1051,7 +1059,7 @@ declare module 'binance-api-node-x' {
   }
 
   export type OrderType_LT = 'LIMIT' | 'LIMIT_MAKER' | 'MARKET' | 'STOP' | 'STOP_MARKET' | 'STOP_LOSS_LIMIT'
-   | 'TAKE_PROFIT_LIMIT' | 'TAKE_PROFIT_MARKET' | 'TRAILING_STOP_MARKET'
+   | 'TAKE_PROFIT_LIMIT' | 'TAKE_PROFIT_MARKET' | 'TRAILING_STOP_MARKET' | 'TAKE_PROFIT'
 
   export const enum OrderType {
     LIMIT = 'LIMIT',

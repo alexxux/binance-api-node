@@ -264,6 +264,16 @@ const order = (privCall, payload = {}, url) => {
   )
 }
 
+const orderBatch = (privCall, payload = {}, url) => {
+  const requires = ['batchOrders']
+
+  if (typeof payload.batchOrders !== 'string') {
+    payload.batchOrders = JSON.stringify(payload.batchOrders);
+  }
+
+  return (checkParams('order', payload, requires) && privCall(url, payload, 'POST'));
+}
+
 const orderOco = (privCall, payload = {}, url) => {
   const newPayload =
     payload.stopLimitPrice && !payload.stopLimitTimeInForce
@@ -462,7 +472,7 @@ export default opts => {
       checkParams('fundingRate', payload, ['symbol']) && pubCall('/fapi/v1/fundingRate', payload),
 
     futuresOrder: payload => order(privCall, payload, '/fapi/v1/order'),
-    futuresBatchOrders: payload => privCall('/fapi/v1/batchOrders', payload),
+    futuresBatchOrders: payload => orderBatch(privCall, payload, '/fapi/v1/batchOrders'),
     futuresGetOrder: payload => privCall('/fapi/v1/order', payload),
     futuresCancelOrder: payload => privCall('/fapi/v1/order', payload, 'DELETE'),
     futuresCancelAllOpenOrders: payload => privCall('/fapi/v1/allOpenOrders', payload, 'DELETE'),
