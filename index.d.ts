@@ -1383,6 +1383,7 @@ declare module 'binance-api-node-x' {
     timeInForce: TimeInForce_LT
     type: OrderType_LT
     updateTime: number
+    positionSide: PositionSide_LT
   }
 
   export interface QueryFuturesOrderResult {
