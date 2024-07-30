@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import zip from 'lodash.zipobject'
 import * as tunnel from 'tunnel';
-import 'isomorphic-fetch'
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const BASE = 'https://api.binance.com'
 const FUTURES = 'https://fapi.binance.com'
